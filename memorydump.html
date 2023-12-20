@@ -76,7 +76,7 @@
         submitButton.textContent = 'Saving…';
         submitButton.disabled = true;
 
-        fetch('http://localhost:5000/api/save-to-notion', {
+        fetch('http://localhost:8080/api/save-to-notion', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
