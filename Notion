@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Dump</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .card {
+            background: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            width: calc(100% - 40px);
+            max-width: 400px;
+            text-align: center;
+        }
+        .title {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        textarea {
+            font-family: 'Times New Roman', Times, serif;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+        .submit-button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="title">Memory Dump</div>
+        <textarea id="noteText" rows="5" placeholder="Enter your memory here..."></textarea>
+        <button id="submitBtn" class="submit-button">Submit</button>
+    </div>
+<script>
+    const viewport = document.querySelector("meta[name=viewport]");
+    document.getElementById('noteText').addEventListener('focus', () => {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0');
+    });
+    document.getElementById('noteText').addEventListener('blur', () => {
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+    });
+</script>
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        var submitButton = document.getElementById('submitBtn');
+        var noteText = document.getElementById('noteText').value;
+
+        // Change button text to 'Saving…' and disable button
+        submitButton.textContent = 'Saving…';
+        submitButton.disabled = true;
+
+        fetch('http://localhost:5000/api/save-to-notion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ note: noteText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            // Change button text to 'Saved' and refresh the page
+            submitButton.textContent = 'Saved';
+            setTimeout(function() {
+                location.reload(); // Refresh the page
+            }, 1000); // Delay in milliseconds
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // In case of error, show the error and re-enable the button
+            submitButton.textContent = 'Submit';
+            submitButton.disabled = false;
+        });
+    });
+</script>
+</body>
+</html>
