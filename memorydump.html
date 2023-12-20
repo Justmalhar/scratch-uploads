@@ -95,7 +95,7 @@
         .catch(error => {
             console.error('Error:', error);
             // In case of error, show the error and re-enable the button
-            submitButton.textContent = 'Submit';
+            submitButton.textContent = error;
             submitButton.disabled = false;
         });
     });
